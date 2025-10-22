@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frida Kahlo: Actividad Interactiva Completa (Español II-III)</title>
+    <style>
+        /*
+        ========================================
+        1. ESTILOS CSS GENERALES Y PALETA DE COLORES
+        ========================================
+        */
+        :root {
+            /* Paleta de colores inspirada en Frida Kahlo y el arte mexicano */
+            --color-rojo-mexico: #E24339;
+            --color-rosa-fuerte: #DD6E98;
+            --color-azul-cobalto: #34495E;
+            --color-verde-cactus: #4D8B31;
+            --color-amarillo-sol: #F7C548;
+            --color-fondo-claro: #F8F7F3;
+            --color-texto-oscuro: #333333;
+            --sombra-boton: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--color-fondo-claro);
+            color: var(--color-texto-oscuro);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .contenedor-principal {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--color-rojo-mexico);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--color-amarillo-sol);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--color-azul-cobalto);
+            font-size: 1.8em;
+            margin-top: 30px;
+            border-left: 5px solid var(--color-rosa-fuerte);
+            padding-left: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            text-align: justify;
+        }
+
+        /* Botones de Navegación/Acción */
+        .boton {
+            display: block;
+            width: 80%;
+            margin: 40px auto;
+            padding: 15px 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--color-rojo-mexico);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+            box-shadow: var(--sombra-boton);
+            text-transform: uppercase;
+        }
+
+        .boton:hover {
+            background-color: #C73B33;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .boton:active {
+            transform: scale(0.98);
+        }
+
+        #boton-vocabulario, #iniciar-burbujas-btn {
+            background-color: var(--color-verde-cactus);
+        }
+
+        #boton-vocabulario:hover, #iniciar-burbujas-btn:hover {
+            background-color: #43782C;
+        }
+
+        /*
+        ========================================
+        2. ESTILOS JUEGO CAMINO A LA FAMA (COMPRENSIÓN)
+        ========================================
+        */
+        #lectura-seccion {
+            padding: 20px;
+            border: 2px dashed var(--color-verde-cactus);
+            border-radius: 10px;
+        }
+        
+        #juego-seccion, #vocabulario-seccion, #juego-burbujas-seccion {
+            display: none; /* Inicialmente ocultos */
+        }
+        
+        /* Medidor de Progreso (Fama) */
+        .barra-progreso {
+            width: 100%;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progreso-relleno {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--color-amarillo-sol), var(--color-rosa-fuerte), var(--color-rojo-mexico));
+            transition: width 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            box-sizing: border-box;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+        
+        .pregunta-card {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--color-azul-cobalto);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .pregunta-card h3 {
+            color: var(--color-azul-cobalto);
+            margin-top: 0;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .opcion-respuesta {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background-color: var(--color-fondo-claro);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            font-size: 1.05em;
+        }
+
+        .opcion-respuesta:hover:not(.disabled) {
+            background-color: #E6E6FA;
+            border-color: var(--color-rosa-fuerte);
+        }
+
+        .opcion-respuesta.correcta {
+            background-color: #D4EDDA;
+            border-color: var(--color-verde-cactus);
+            font-weight: bold;
+        }
+
+        .opcion-respuesta.incorrecta {
+            background-color: #F8D7DA;
+            border-color: var(--color-rojo-mexico);
+        }
+
+        .opcion-respuesta.disabled {
+            cursor: default;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correcto {
+            background-color: var(--color-verde-cactus);
+            color: white;
+        }
+
+        .feedback.incorrecto {
+            background-color: var(--color-rojo-mexico);
+            color: white;
+        }
+
+        .boton-siguiente-nivel {
+            display: none;
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--color-verde-cactus);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        /* Pantalla Final del Juego de Comprensión */
+        #pantalla-final-juego {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: var(--color-azul-cobalto);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        #pantalla-final-juego h2 {
+            color: var(--color-amarillo-sol);
+            font-size: 3em;
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        /*
+        ========================================
+        3. ESTILOS VOCABULARIO (PAIRING)
+        ========================================
+        */
+        #vocabulario-contenedor {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .columna-palabras, .columna-definiciones {
+            flex: 1;
+            min-height: 400px;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .columna-palabras {
+            background-color: #EBF5FB;
+            border: 2px solid var(--color-azul-cobalto);
+        }
+
+        .columna-definiciones {
+            background-color: #FCF3CF;
+            border: 2px solid var(--color-amarillo-sol);
+        }
+
+        .item-vocabulario {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s, box-shadow 0.2s, background-color 0.2s;
+            user-select: none;
+        }
+
+        .palabra {
+            background-color: var(--color-azul-cobalto);
+            color: white;
+        }
+
+        .definicion {
+            background-color: var(--color-amarillo-sol);
+            color: var(--color-texto-oscuro);
+            font-weight: normal;
+        }
+
+        .seleccionado {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px var(--color-rojo-mexico);
+        }
+
+        .match-correcto {
+            background-color: var(--color-verde-cactus) !important;
+            color: white !important;
+            cursor: default;
+        }
+
+        /* Pantalla Final de Vocabulario */
+        #pantalla-final-vocabulario {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: var(--color-rojo-mexico);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        #pantalla-final-vocabulario h2 {
+            color: var(--color-amarillo-sol);
+            font-size: 3em;
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        /*
+        ========================================
+        4. ESTILOS JUEGO VERDADERO/FALSO (BURBUJAS)
+        ========================================
+        */
+        #juego-burbujas-seccion {
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        #area-juego-burbujas {
+            position: relative;
+            height: 500px;
+            width: 100%;
+            background: linear-gradient(to top, #e0f7fa 0%, #b3e5fc 100%);
+            border: 3px solid var(--color-azul-cobalto);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #barra-info-burbujas {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--color-azul-cobalto);
+        }
+
+        .medidor {
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: var(--color-fondo-claro);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        #control-burbuja {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 20px;
+            z-index: 10;
+        }
+
+        .burbuja {
+            position: absolute;
+            width: auto;
+            min-width: 250px;
+            max-width: 80%;
+            padding: 15px 25px;
+            border-radius: 50px;
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 3px solid var(--color-rosa-fuerte);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-weight: bold;
+            color: var(--color-azul-cobalto);
+            font-size: 1.1em;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 5;
+            top: 550px;
+            display: none;
+        }
+
+        @keyframes flotar {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-550px) scale(1.1); opacity: 0.9; }
+        }
+
+        @keyframes explotar {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        .explotando {
+            animation: explotar 0.4s ease-out forwards;
+        }
+
+        #controles-vf {
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+            margin-top: 20px;
+        }
+
+        .boton-vf {
+            padding: 15px 35px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        
+        .boton-vf:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+        }
+
+        #btn-verdadero {
+            background-color: var(--color-verde-cactus);
+        }
+
+        #btn-falso {
+            background-color: var(--color-rojo-mexico);
+        }
+
+        #retroalimentacion-vf {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: rgba(52, 73, 94, 0.9);
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+            z-index: 15;
+            text-align: center;
+            max-width: 80%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.3s;
+        }
+
+        #combo-display {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4em;
+            color: var(--color-amarillo-sol);
+            text-shadow: 2px 2px 5px var(--color-rojo-mexico);
+            font-weight: 900;
+            opacity: 0;
+            display: none;
+            z-index: 20;
+        }
+
+        @keyframes comboPop {
+            0% { opacity: 0; transform: translate(-50%, 50px) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, 0px) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50px) scale(1); }
+        }
+
+        #pantalla-final-burbujas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(226, 67, 57, 0.95);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 30;
+            display: none;
+        }
+        
+        #pantalla-final-burbujas h2 {
+            color: var(--color-amarillo-sol);
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .puntuacion-final {
+            font-size: 3em;
+            color: var(--color-verde-cactus);
+            margin-top: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <h1>Frida Kahlo: Actividades Interactivas</h1>
+
+        <div id="lectura-seccion">
+            <h2>Una artista única</h2>
+
+            <p><strong>¿Quién fue Frida Kahlo?</strong></p>
+            <p>Frida Kahlo fue una artista mexicana muy famosa. Nació el 6 de julio de 1907 en Coyoacán, un lugar cerca de la Ciudad de México. Es conocida por sus pinturas, especialmente sus <strong>autorretratos</strong>.</p>
+
+            <h2>Eventos importantes de su vida</h2>
+            <p>Cuando Frida era niña, tuvo una enfermedad llamada <strong>polio</strong>, que afectó una de sus piernas. A los 18 años, tuvo un <strong>accidente de autobús</strong> muy grave. Estuvo mucho tiempo en cama y comenzó a pintar para pasar el tiempo. Ese accidente cambió su vida para siempre.</p>
+            <p>Frida se casó con el famoso artista <strong>Diego Rivera</strong> y viajó a lugares como Nueva York y París, donde mostró su arte.</p>
+
+            <h2>¿Por qué es famosa?</h2>
+            <p>Frida es famosa porque pintaba de una forma muy <strong>original</strong>. Mostraba sus <strong>emociones</strong>, su dolor y su vida en sus cuadros. Usaba colores brillantes, <strong>símbolos</strong> de México y muchas flores y animales. Sus obras son muy poderosas y personales.</p>
+
+            <h2>¿Por qué es importante para la cultura hispana?</h2>
+            <p>Frida Kahlo es un símbolo de <strong>fuerza</strong> y de <strong>orgullo</strong> para muchas personas. Representa el valor de ser uno mismo y de luchar en los momentos difíciles.</p>
+            <p>También mostró al mundo la <strong>cultura</strong> mexicana, con su ropa, sus tradiciones y su arte.</p>
+
+            <p>Hoy en día, muchas personas admiran a Frida por su arte y por su historia. <strong>¡Es una inspiración para todos!</strong></p>
+
+            <button class="boton" onclick="iniciarJuego()">Poner a prueba mi comprensión</button>
+        </div>
+
+        <div id="juego-seccion">
+            <h2>Camino a la Fama de Frida Kahlo</h2>
+
+            <div class="barra-progreso">
+                <div class="progreso-relleno" id="progreso-relleno">FAMA: 0%</div>
+            </div>
+
+            <div id="nivel-contenedor">
+                </div>
+
+            <div id="pantalla-final-juego">
+                <h2>¡Misión Cumplida! 🎉</h2>
+                <p>¡Felicidades! Has completado el **Camino a la Fama de Frida Kahlo**.</p>
+                <button class="boton" id="boton-vocabulario" onclick="iniciarVocabulario()">Actividad de vocabulario</button>
+            </div>
+        </div>
+        
+        <div id="vocabulario-seccion">
+            <h2>Actividad de Vocabulario: Unir Conceptos</h2>
+            <p style="text-align:center;"><strong>Instrucción:</strong> Selecciona una palabra de la izquierda y luego su definición correcta de la derecha.</p>
+
+            <div id="vocabulario-contenedor">
+                <div class="columna-palabras" id="columna-palabras">
+                    </div>
+                <div class="columna-definiciones" id="columna-definiciones">
+                    </div>
+            </div>
+
+            <div id="feedback-vocabulario" style="display: none;"></div>
+            
+            <div id="pantalla-final-vocabulario">
+                <h2>🌟 ¡Excelente trabajo!</h2>
+                <p>Has completado toda la actividad sobre Frida Kahlo.</p>
+                <button class="boton" id="iniciar-burbujas-btn" onclick="iniciarJuegoBurbujas()">Juego Extra: Explotando Burbujas</button>
+            </div>
+        </div>
+        
+        <div id="juego-burbujas-seccion">
+            <h2>Explotando Burbujas de Fama</h2>
+            <p style="text-align:center; margin-bottom: 15px;">¡Sé rápido! Haz clic en Verdadero o Falso antes de que la burbuja se caiga.</p>
+
+            <div id="barra-info-burbujas">
+                <div class="medidor">Puntuación: <span id="puntuacion-burbujas">0</span></div>
+                <div class="medidor">Vidas: <span id="vidas-burbujas">❤️❤️❤️</span></div>
+                <div class="medidor">Combo: <span id="combo-burbujas">0</span>x</div>
+            </div>
+
+            <div id="area-juego-burbujas">
+                <div id="combo-display"></div>
+                <div id="retroalimentacion-vf"></div>
+                
+                <div id="burbuja-activa" class="burbuja" style="left: 30%;">La afirmación va aquí.</div>
+
+                <div id="control-burbuja">
+                    <div id="controles-vf">
+                        <button class="boton-vf" id="btn-verdadero" onclick="responderBurbuja(true)">VERDADERO</button>
+                        <button class="boton-vf" id="btn-falso" onclick="responderBurbuja(false)">FALSO</button>
+                    </div>
+                </div>
+
+                <div id="pantalla-final-burbujas">
+                    <h2>¡Fin del Juego! 🏆</h2>
+                    <p>Has completado el juego de Verdadero/Falso sobre Frida Kahlo.</p>
+                    <p>Tu puntuación final es:</p>
+                    <div class="puntuacion-final" id="puntuacion-final-burbujas">0</div>
+                    <button class="boton" onclick="window.location.reload()">Volver a empezar</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /*
+        ========================================
+        JAVASCRIPT: LÓGICA DEL JUEGO DE COMPRENSIÓN (CAMINO A LA FAMA)
+        ========================================
+        */
+
+        // 1. ESTRUCTURA DE DATOS: PREGUNTAS DEL JUEGO (Pregunta Nivel 3 Modificada)
+        const niveles = [
+            {
+                nombre: "Infancia y Juventud",
+                preguntas: [
+                    {
+                        pregunta: "¿Dónde nació Frida Kahlo?",
+                        opciones: ["París, Francia", "Coyoacán, cerca de la Ciudad de México", "Nueva York, Estados Unidos", "Madrid, España"],
+                        respuestaCorrecta: 1
+                    },
+                    {
+                        pregunta: "¿Qué enfermedad tuvo Frida cuando era niña que afectó una de sus piernas?",
+                        opciones: ["Sarampión", "Polio", "Gripe", "Cáncer"],
+                        respuestaCorrecta: 1
+                    }
+                ]
+            },
+            {
+                nombre: "Accidentes y Comienzos Artísticos",
+                preguntas: [
+                    {
+                        pregunta: "¿A qué edad tuvo Frida el accidente de autobús que cambió su vida?",
+                        opciones: ["A los 10 años", "A los 18 años", "A los 30 años", "A los 5 años"],
+                        respuestaCorrecta: 1
+                    },
+                    {
+                        pregunta: "¿Por qué razón empezó a pintar Frida después del accidente?",
+                        opciones: ["Para ganar dinero rápidamente", "Para decorar su casa", "Para pasar el tiempo mientras estaba en cama", "Porque se lo pidió Diego Rivera"],
+                        respuestaCorrecta: 2
+                    }
+                ]
+            },
+            {
+                nombre: "Vida con Diego Rivera y Fama Internacional",
+                preguntas: [
+                    {
+                        // PREGUNTA MODIFICADA: Ahora es "¿Con qué artista famoso se casó Frida Kahlo?"
+                        pregunta: "¿Con qué artista famoso se casó Frida Kahlo?",
+                        opciones: ["Pablo Picasso", "Salvador Dalí", "Diego Rivera", "David Siqueiros"],
+                        respuestaCorrecta: 2
+                    },
+                    {
+                        pregunta: "¿Qué tipo de pintura es el más conocido en la obra de Frida Kahlo?",
+                        opciones: ["Paisajes (landscapes)", "Naturalezas muertas (still life)", "Autorretratos (self-portraits)", "Esculturas"],
+                        respuestaCorrecta: 2
+                    }
+                ]
+            },
+            {
+                nombre: "Legado y Últimos Años",
+                preguntas: [
+                    {
+                        pregunta: "¿Qué usaba Frida en sus cuadros para mostrar sus emociones y su vida?",
+                        opciones: ["Fórmulas matemáticas y números", "Colores brillantes, símbolos de México, flores y animales", "Fotos en blanco y negro", "Mucha pintura negra"],
+                        respuestaCorrecta: 1
+                    },
+                    {
+                        pregunta: "¿Qué simboliza Frida Kahlo para muchas personas en la cultura hispana?",
+                        opciones: ["Timidez y soledad", "Riqueza material", "Fuerza, orgullo y el valor de ser uno mismo", "Mala suerte"],
+                        respuestaCorrecta: 2
+                    }
+                ]
+            }
+        ];
+
+        // 2. VARIABLES DE ESTADO DEL JUEGO
+        let nivelActual = 0;
+        let preguntasRespondidasCorrectamenteEnNivel = 0;
+        const totalNiveles = niveles.length;
+        const famaPorNivel = 100 / totalNiveles;
+
+        // 3. REFERENCIAS DEL DOM (HTML Elements)
+        const lecturaSeccion = document.getElementById('lectura-seccion');
+        const juegoSeccion = document.getElementById('juego-seccion');
+        const nivelContenedor = document.getElementById('nivel-contenedor');
+        const progresoRelleno = document.getElementById('progreso-relleno');
+        const pantallaFinalJuego = document.getElementById('pantalla-final-juego');
+
+        /**
+         * Oculta la sección de lectura y muestra e inicia la sección del juego.
+         */
+        function iniciarJuego() {
+            lecturaSeccion.style.display = 'none';
+            juegoSeccion.style.display = 'block';
+            cargarNivel();
+        }
+
+        /**
+         * Muestra las preguntas del nivel actual.
+         */
+        function cargarNivel() {
+            if (nivelActual >= totalNiveles) {
+                mostrarPantallaFinalJuego();
+                return;
+            }
+
+            nivelContenedor.style.opacity = '0';
+            setTimeout(() => {
+                nivelContenedor.innerHTML = '';
+                preguntasRespondidasCorrectamenteEnNivel = 0;
+
+                const nivel = niveles[nivelActual];
+                let nivelHTML = `<h2>Nivel ${nivelActual + 1}: ${nivel.nombre}</h2>`;
+
+                nivel.preguntas.forEach((preguntaData, indexPregunta) => {
+                    nivelHTML += `
+                        <div class="pregunta-card" data-pregunta-index="${indexPregunta}">
+                            <h3>Pregunta ${indexPregunta + 1}: ${preguntaData.pregunta}</h3>
+                    `;
+                    
+                    preguntaData.opciones.forEach((opcion, indexOpcion) => {
+                        nivelHTML += `
+                            <button 
+                                class="opcion-respuesta" 
+                                onclick="verificarRespuesta(${indexPregunta}, ${indexOpcion}, this)"
+                                data-opcion-index="${indexOpcion}"
+                            >
+                                ${opcion}
+                            </button>
+                        `;
+                    });
+
+                    nivelHTML += `
+                            <div class="feedback" id="feedback-${indexPregunta}"></div>
+                        </div>
+                    `;
+                });
+
+                nivelHTML += `
+                    <button class="boton-siguiente-nivel" id="siguiente-nivel-btn" onclick="siguienteNivel()">
+                        ¡Hecho! Continuar al siguiente nivel
+                    </button>
+                `;
+
+                nivelContenedor.innerHTML = nivelHTML;
+                nivelContenedor.style.opacity = '1';
+            }, 500);
+        }
+
+        /**
+         * Verifica si la opción seleccionada es correcta.
+         */
+        function verificarRespuesta(indexPregunta, indexOpcion, boton) {
+            const pregunta = niveles[nivelActual].preguntas[indexPregunta];
+            const esCorrecta = indexOpcion === pregunta.respuestaCorrecta;
+            const feedbackElement = document.getElementById(`feedback-${indexPregunta}`);
+            const preguntaCard = boton.closest('.pregunta-card');
+            
+            if (preguntaCard.classList.contains('respondida-correctamente')) return;
+
+            preguntaCard.querySelectorAll('.opcion-respuesta').forEach(b => b.classList.add('disabled'));
+
+            if (esCorrecta) {
+                boton.classList.add('correcta');
+                feedbackElement.className = 'feedback correcto';
+                feedbackElement.innerHTML = '✅ Correcto. ¡Excelente!';
+                feedbackElement.style.display = 'block';
+
+                preguntasRespondidasCorrectamenteEnNivel++;
+                preguntaCard.classList.add('respondida-correctamente');
+
+                if (preguntasRespondidasCorrectamenteEnNivel === niveles[nivelActual].preguntas.length) {
+                    document.getElementById('siguiente-nivel-btn').style.display = 'block';
+                    actualizarProgreso();
+                }
+
+            } else {
+                boton.classList.add('incorrecta');
+                feedbackElement.className = 'feedback incorrecto';
+                feedbackElement.innerHTML = '❌ Incorrecto. Vuelve a leer el texto y ¡Intenta otra vez!';
+                feedbackElement.style.display = 'block';
+                
+                preguntaCard.querySelectorAll('.opcion-respuesta').forEach(b => {
+                    if (b !== boton) {
+                         b.classList.remove('disabled');
+                    }
+                });
+            }
+        }
+
+        /**
+         * Avanza al siguiente nivel del juego.
+         */
+        function siguienteNivel() {
+            nivelActual++;
+            document.getElementById('siguiente-nivel-btn').style.display = 'none';
+            cargarNivel();
+        }
+
+        /**
+         * Actualiza la barra de progreso (Fama).
+         */
+        function actualizarProgreso() {
+            const progreso = nivelActual * famaPorNivel;
+            progresoRelleno.style.width = `${progreso + famaPorNivel}%`;
+            progresoRelleno.textContent = `FAMA: ${Math.round(progreso + famaPorNivel)}%`;
+        }
+
+        /**
+         * Muestra la pantalla final del juego de comprensión.
+         */
+        function mostrarPantallaFinalJuego() {
+            nivelContenedor.style.display = 'none';
+            pantallaFinalJuego.style.display = 'block';
+        }
+
+
+        /*
+        ========================================
+        JAVASCRIPT: LÓGICA DEL VOCABULARIO
+        ========================================
+        */
+        
+        // 4. ESTRUCTURA DE DATOS: VOCABULARIO
+        const vocabularioData = [
+            { palabra: "Autorretrato", definicion: "Una pintura o dibujo que un artista hace de sí mismo.", id: 0 },
+            { palabra: "Accidente", definicion: "Un evento inesperado que causa daño o problemas.", id: 1 },
+            { palabra: "Polio", definicion: "Una enfermedad que afecta los músculos y puede causar dificultad para caminar.", id: 2 },
+            { palabra: "Símbolo", definicion: "Una imagen o cosa que representa una idea o un sentimiento.", id: 3 },
+            { palabra: "Cultura", definicion: "Las costumbres, tradiciones, arte y forma de vida de un pueblo.", id: 4 }
+        ];
+
+        // 5. VARIABLES DE ESTADO DEL VOCABULARIO
+        let palabraSeleccionada = null;
+        let paresCorrectos = 0;
+        const totalPares = vocabularioData.length;
+
+        const vocabularioSeccion = document.getElementById('vocabulario-seccion');
+        const columnaPalabras = document.getElementById('columna-palabras');
+        const columnaDefiniciones = document.getElementById('columna-definiciones');
+        const pantallaFinalVocabulario = document.getElementById('pantalla-final-vocabulario');
+        const feedbackVocabulario = document.getElementById('feedback-vocabulario');
+        
+        // Helper para obtener variables CSS
+        function varColor(variable) {
+            return getComputedStyle(document.documentElement).getPropertyValue(variable) || variable;
+        }
+
+
+        /**
+         * Oculta la sección del juego y muestra la de vocabulario.
+         */
+        function iniciarVocabulario() {
+            juegoSeccion.style.display = 'none';
+            vocabularioSeccion.style.display = 'block';
+            cargarVocabulario();
+        }
+
+        /**
+         * Carga y mezcla las palabras y definiciones.
+         */
+        function cargarVocabulario() {
+            columnaPalabras.innerHTML = '';
+            columnaDefiniciones.innerHTML = '';
+            paresCorrectos = 0;
+            
+            const palabras = vocabularioData.map(item => ({ id: item.id, texto: item.palabra }));
+            const definiciones = vocabularioData.map(item => ({ id: item.id, texto: item.definicion }));
+
+            // Mezclar el orden de las definiciones
+            definiciones.sort(() => Math.random() - 0.5); 
+
+            // Inyectar Palabras
+            palabras.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'item-vocabulario palabra';
+                item.textContent = p.texto;
+                item.dataset.matchId = p.id;
+                item.onclick = () => seleccionarPalabra(item);
+                columnaPalabras.appendChild(item);
+            });
+
+            // Inyectar Definiciones
+            definiciones.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'item-vocabulario definicion';
+                item.textContent = d.texto;
+                item.dataset.matchId = d.id;
+                item.onclick = () => seleccionarDefinicion(item);
+                columnaDefiniciones.appendChild(item);
+            });
+        }
+
+        /**
+         * Maneja la selección de un elemento Palabra.
+         */
+        function seleccionarPalabra(palabra) {
+            if (palabra.classList.contains('match-correcto')) return;
+
+            if (palabraSeleccionada) {
+                palabraSeleccionada.classList.remove('seleccionado');
+            }
+
+            palabraSeleccionada = palabra;
+            palabraSeleccionada.classList.add('seleccionado');
+            
+            feedbackVocabulario.style.display = 'none';
+        }
+
+        /**
+         * Maneja la selección de un elemento Definición e intenta hacer match.
+         */
+        function seleccionarDefinicion(definicion) {
+            if (definicion.classList.contains('match-correcto')) return;
+            
+            if (!palabraSeleccionada) {
+                mostrarFeedbackVocabulario('Primero selecciona una **palabra** de la columna izquierda.', false);
+                return;
+            }
+
+            const idPalabra = parseInt(palabraSeleccionada.dataset.matchId);
+            const idDefinicion = parseInt(definicion.dataset.matchId);
+
+            if (idPalabra === idDefinicion) {
+                // MATCH CORRECTO
+                palabraSeleccionada.classList.remove('seleccionado');
+                palabraSeleccionada.classList.add('match-correcto');
+                definicion.classList.add('match-correcto');
+                
+                paresCorrectos++;
+                palabraSeleccionada = null;
+                
+                mostrarFeedbackVocabulario('✅ ¡Par correcto! Sigue uniendo los conceptos.', true);
+
+                if (paresCorrectos === totalPares) {
+                    setTimeout(mostrarPantallaFinalVocabulario, 1000);
+                }
+
+            } else {
+                // MATCH INCORRECTO
+                palabraSeleccionada.classList.remove('seleccionado');
+                palabraSeleccionada = null;
+                mostrarFeedbackVocabulario('❌ Par incorrecto. Intenta de nuevo con otras opciones.', false);
+            }
+        }
+        
+        /**
+         * Muestra el feedback de la actividad de vocabulario.
+         */
+        function mostrarFeedbackVocabulario(mensaje, esCorrecto) {
+            feedbackVocabulario.style.display = 'block';
+            feedbackVocabulario.innerHTML = mensaje.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            if (esCorrecto) {
+                feedbackVocabulario.style.backgroundColor = '#D4EDDA';
+                feedbackVocabulario.style.color = varColor('--color-verde-cactus');
+                feedbackVocabulario.style.border = `2px solid ${varColor('--color-verde-cactus')}`;
+            } else {
+                feedbackVocabulario.style.backgroundColor = '#F8D7DA';
+                feedbackVocabulario.style.color = varColor('--color-rojo-mexico');
+                feedbackVocabulario.style.border = `2px solid ${varColor('--color-rojo-mexico')}`;
+            }
+        }
+
+        /**
+         * Muestra la pantalla final del vocabulario.
+         */
+        function mostrarPantallaFinalVocabulario() {
+            document.getElementById('vocabulario-contenedor').style.display = 'none';
+            feedbackVocabulario.style.display = 'none';
+            pantallaFinalVocabulario.style.display = 'block';
+        }
+
+
+        /*
+        ========================================
+        JAVASCRIPT: LÓGICA DEL JUEGO VERDADERO/FALSO (BURBUJAS)
+        ========================================
+        */
+
+        // 6. ESTRUCTURA DE DATOS: AFIRMACIONES V/F
+        const afirmacionesBurbujas = [
+            {
+                texto: "Frida Kahlo nació en la Ciudad de México.",
+                respuesta: false,
+                feedback: "Falso. Nació en Coyoacán, un barrio cerca de la Ciudad de México."
+            },
+            {
+                texto: "Frida tuvo polio cuando era niña.",
+                respuesta: true,
+                feedback: "Verdadero. La polio afectó su pierna y su forma de caminar."
+            },
+            {
+                texto: "El accidente de autobús a los 18 años cambió su vida para siempre.",
+                respuesta: true,
+                feedback: "Verdadero. Este accidente la obligó a estar en cama, donde comenzó a pintar."
+            },
+            {
+                texto: "Frida comenzó a pintar después de su accidente.",
+                respuesta: true,
+                feedback: "Verdadero. La pintura se convirtió en su forma de expresar el dolor y su mundo interior."
+            },
+            {
+                texto: "Frida se casó con Diego Rivera, un artista famoso.",
+                respuesta: true,
+                feedback: "Verdadero. Tuvieron una relación intensa y compleja que influyó mucho en su arte."
+            },
+            {
+                texto: "Frida viajó a Nueva York y a París para mostrar su arte.",
+                respuesta: true,
+                feedback: "Verdadero. Su fama se hizo internacional gracias a estas exposiciones."
+            },
+            {
+                texto: "Sus pinturas siempre fueron tristes y con colores opacos.",
+                respuesta: false,
+                feedback: "Falso. Aunque expresan dolor, usaba colores mexicanos muy **brillantes** y vivos, como el amarillo y el rosa fuerte."
+            },
+            {
+                texto: "Hoy en día, Frida es vista como una inspiración global de fuerza y orgullo.",
+                respuesta: true,
+                feedback: "Verdadero. Es un ícono cultural y feminista."
+            }
+        ];
+
+        // 7. VARIABLES DE ESTADO DEL JUEGO BURBUJAS
+        let puntuacion = 0;
+        let vidas = 3;
+        let combo = 0;
+        let afirmacionActualIndex = 0;
+        let juegoActivo = false;
+        let temporizadorBurbuja;
+        
+        // 8. REFERENCIAS DEL DOM PARA BURBUJAS
+        const juegoBurbujasSeccion = document.getElementById('juego-burbujas-seccion');
+        const burbujaActiva = document.getElementById('burbuja-activa');
+        const puntuacionDisplay = document.getElementById('puntuacion-burbujas');
+        const vidasDisplay = document.getElementById('vidas-burbujas');
+        const comboDisplay = document.getElementById('combo-burbujas');
+        const comboAnimacion = document.getElementById('combo-display');
+        const retroalimentacionVF = document.getElementById('retroalimentacion-vf');
+        const pantallaFinalBurbujas = document.getElementById('pantalla-final-burbujas');
+        const puntuacionFinalBurbujas = document.getElementById('puntuacion-final-burbujas');
+        const areaJuegoBurbujas = document.getElementById('area-juego-burbujas');
+
+        /**
+         * Inicia el juego de burbujas.
+         */
+        function iniciarJuegoBurbujas() {
+            vocabularioSeccion.style.display = 'none';
+            juegoBurbujasSeccion.style.display = 'block';
+            juegoActivo = true;
+            reiniciarValoresBurbujas();
+            mostrarNuevaBurbuja();
+        }
+        
+        /**
+         * Reinicia los valores de vidas y puntuación para las burbujas.
+         */
+        function reiniciarValoresBurbujas() {
+            puntuacion = 0;
+            vidas = 3;
+            combo = 0;
+            afirmacionesBurbujas.sort(() => Math.random() - 0.5); 
+            afirmacionActualIndex = 0;
+            actualizarDisplayBurbujas();
+            pantallaFinalBurbujas.style.display = 'none';
+        }
+
+        /**
+         * Actualiza el contador de puntos, vidas y combo.
+         */
+        function actualizarDisplayBurbujas() {
+            puntuacionDisplay.textContent = puntuacion;
+            vidasDisplay.textContent = '❤️'.repeat(vidas);
+            comboDisplay.textContent = combo;
+        }
+        
+        /**
+         * Muestra la siguiente burbuja.
+         */
+        function mostrarNuevaBurbuja() {
+            if (!juegoActivo || afirmacionActualIndex >= afirmacionesBurbujas.length) {
+                terminarJuegoBurbujas();
+                return;
+            }
+
+            const afirmacion = afirmacionesBurbujas[afirmacionActualIndex];
+            burbujaActiva.textContent = afirmacion.texto;
+            burbujaActiva.dataset.respuestaCorrecta = afirmacion.respuesta;
+            burbujaActiva.dataset.feedback = afirmacion.feedback;
+
+            // Reiniciar animación y posición
+            burbujaActiva.style.animation = 'none';
+            burbujaActiva.offsetHeight; 
+            burbujaActiva.style.top = `${areaJuegoBurbujas.offsetHeight}px`; 
+            burbujaActiva.style.display = 'block';
+            burbujaActiva.classList.remove('explotando');
+
+            // Posición horizontal aleatoria
+            const randomLeft = Math.floor(Math.random() * 50) + 20; 
+            burbujaActiva.style.left = `${randomLeft}%`;
+
+            // Duración de la animación (velocidad)
+            const duracionAnimacion = 6 + (Math.random() * 2);
+            burbujaActiva.style.animation = `flotar ${duracionAnimacion}s linear forwards`;
+            
+            // Temporizador para fallo por tiempo
+            clearTimeout(temporizadorBurbuja);
+            temporizadorBurbuja = setTimeout(() => {
+                perderVida("¡Tiempo agotado! La afirmación cayó al vacío.");
+            }, duracionAnimacion * 1000);
+            
+            afirmacionActualIndex++;
+        }
+
+        /**
+         * Maneja la respuesta del usuario.
+         */
+        function responderBurbuja(respuestaUsuario) {
+            if (!juegoActivo) return;
+
+            clearTimeout(temporizadorBurbuja);
+            const respuestaCorrecta = burbujaActiva.dataset.respuestaCorrecta === 'true';
+
+            if (respuestaUsuario === respuestaCorrecta) {
+                // RESPUESTA CORRECTA
+                puntuacion += 10;
+                combo++;
+                
+                if (combo >= 3) {
+                    puntuacion += combo * 5;
+                    mostrarComboAnimacion(combo);
+                }
+                
+                // Animación de explosión
+                burbujaActiva.style.animation = 'none';
+                burbujaActiva.classList.add('explotando');
+                
+                mostrarFeedbackVF('✅ ¡Correcto!', 1000);
+                
+                setTimeout(() => {
+                    mostrarNuevaBurbuja();
+                }, 400);
+                
+            } else {
+                // RESPUESTA INCORRECTA
+                combo = 0;
+                perderVida(burbujaActiva.dataset.feedback);
+            }
+
+            actualizarDisplayBurbujas();
+        }
+
+        /**
+         * Reduce la vida y maneja el fin del juego por vidas.
+         */
+        function perderVida(mensajeFeedback) {
+            vidas--;
+            combo = 0;
+            
+            mostrarFeedbackVF(`❌ ${mensajeFeedback}`, 3000);
+            
+            if (vidas <= 0) {
+                juegoActivo = false;
+                terminarJuegoBurbujas();
+            } else {
+                burbujaActiva.style.animation = 'none';
+                burbujaActiva.classList.remove('explotando');
+                mostrarNuevaBurbuja();
+            }
+            actualizarDisplayBurbujas();
+        }
+        
+        /**
+         * Muestra la animación de combo.
+         */
+        function mostrarComboAnimacion(comboCount) {
+            comboAnimacion.textContent = `${comboCount} ¡COMBO! 🌟`;
+            comboAnimacion.style.display = 'block';
+            comboAnimacion.style.animation = 'none';
+            comboAnimacion.offsetHeight;
+            comboAnimacion.style.animation = 'comboPop 0.8s ease-out forwards';
+        }
+
+        /**
+         * Muestra un mensaje de retroalimentación temporal.
+         */
+        function mostrarFeedbackVF(mensaje, duracion) {
+            retroalimentacionVF.innerHTML = mensaje;
+            retroalimentacionVF.style.display = 'block';
+            
+            setTimeout(() => {
+                retroalimentacionVF.style.display = 'none';
+            }, duracion);
+        }
+
+        /**
+         * Finaliza el juego y muestra la pantalla de puntuación.
+         */
+        function terminarJuegoBurbujas() {
+            juegoActivo = false;
+            clearTimeout(temporizadorBurbuja);
+            burbujaActiva.style.display = 'none';
+            
+            puntuacionFinalBurbujas.textContent = puntuacion;
+            pantallaFinalBurbujas.style.display = 'flex';
+        }
+
+        // 9. FUNCIÓN DE INICIO AUTOMÁTICO
+        // Mantiene la sección de lectura visible al cargar.
+    </script>
+
+</body>
+</html>
