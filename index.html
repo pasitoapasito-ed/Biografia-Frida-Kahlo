@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frida Kahlo: Actividad Interactiva Completa (Español II-III)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet"> 
     <style>
         /*
         ========================================
@@ -11,19 +13,19 @@
         ========================================
         */
         :root {
-            /* Paleta de colores inspirada en Frida Kahlo y el arte mexicano */
-            --color-rojo-mexico: #E24339;
-            --color-rosa-fuerte: #DD6E98;
-            --color-azul-cobalto: #34495E;
-            --color-verde-cactus: #4D8B31;
-            --color-amarillo-sol: #F7C548;
-            --color-fondo-claro: #F8F7F3;
+            /* Paleta de colores solicitada */
+            --color-titulo: #f719ae;    /* Rosa Fuerte - Títulos, Énfasis, Botones Principales */
+            --color-acento: #fbac68;    /* Naranja Suave - Acentos, Feedback, Borde */
+            --color-claro: #fdd050;     /* Amarillo Brillo - Fondo Claro, Matches Correctos */
+            --color-texto: #31a4ac;     /* Azul Aguamarina - Texto General, Bordes */
+            --color-fondo-claro: #fcfcfc; 
             --color-texto-oscuro: #333333;
             --sombra-boton: 0 4px 6px rgba(0, 0, 0, 0.2);
+            --sombra-opcion: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Quicksand', sans-serif; /* Fuente de texto */
             background-color: var(--color-fondo-claro);
             color: var(--color-texto-oscuro);
             line-height: 1.6;
@@ -42,19 +44,22 @@
         }
 
         h1 {
+            font-family: 'Caveat', cursive; /* Fuente de título */
             text-align: center;
-            color: var(--color-rojo-mexico);
-            font-size: 2.5em;
+            color: var(--color-titulo);
+            font-size: 3em;
             margin-bottom: 20px;
-            border-bottom: 3px solid var(--color-amarillo-sol);
+            border-bottom: 3px solid var(--color-claro);
             padding-bottom: 10px;
+            text-transform: uppercase;
         }
 
         h2 {
-            color: var(--color-azul-cobalto);
-            font-size: 1.8em;
+            font-family: 'Caveat', cursive; /* Fuente de título */
+            color: var(--color-texto);
+            font-size: 2.2em;
             margin-top: 30px;
-            border-left: 5px solid var(--color-rosa-fuerte);
+            border-left: 5px solid var(--color-acento);
             padding-left: 10px;
         }
         
@@ -62,11 +67,15 @@
             margin-bottom: 15px;
             font-size: 1.1em;
             text-align: justify;
+            color: var(--color-texto-oscuro);
+        }
+        
+        strong {
+            color: var(--color-titulo); 
+            font-weight: 700;
         }
 
-                }
-
-        /* Estilos para la imagen de Frida Kahlo */
+        /* Estilos para la imagen de Celia Cruz (cambiada visualmente a Frida) */
         .imagen-biografia {
             display: block;
             max-width: 45%;
@@ -77,16 +86,17 @@
             border: 3px solid var(--color-acento);
         }
 
-        /* Botones de Navegación/Acción */
+        /* Botones de Navegación/Acción - MANTENIDOS EN APARIENCIA GENERAL */
         .boton {
             display: block;
             width: 80%;
             margin: 40px auto;
             padding: 15px 30px;
+            font-family: 'Quicksand', sans-serif; /* Aplicar la fuente Quicksand */
             font-size: 1.3em;
             font-weight: bold;
             color: white;
-            background-color: var(--color-rojo-mexico);
+            background-color: var(--color-titulo); 
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -96,7 +106,7 @@
         }
 
         .boton:hover {
-            background-color: #C73B33;
+            background-color: #d7159c;
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
         }
         
@@ -105,11 +115,19 @@
         }
 
         #boton-vocabulario, #iniciar-burbujas-btn {
-            background-color: var(--color-verde-cactus);
+            background-color: var(--color-texto); 
         }
 
         #boton-vocabulario:hover, #iniciar-burbujas-btn:hover {
-            background-color: #43782C;
+            background-color: #2a888e; 
+        }
+        
+        /* CAMBIO SOLICITADO: Color del botón "Volver a empezar" */
+        #pantalla-final-burbujas .boton {
+            background-color: var(--color-texto); /* #31a4ac */
+        }
+        #pantalla-final-burbujas .boton:hover {
+            background-color: #2a888e; 
         }
 
         /*
@@ -119,12 +137,12 @@
         */
         #lectura-seccion {
             padding: 20px;
-            border: 2px dashed var(--color-verde-cactus);
+            border: 2px dashed var(--color-acento);
             border-radius: 10px;
         }
         
         #juego-seccion, #vocabulario-seccion, #juego-burbujas-seccion {
-            display: none; /* Inicialmente ocultos */
+            display: none;
         }
         
         /* Medidor de Progreso (Fama) */
@@ -141,7 +159,7 @@
         .progreso-relleno {
             height: 100%;
             width: 0%;
-            background: linear-gradient(to right, var(--color-amarillo-sol), var(--color-rosa-fuerte), var(--color-rojo-mexico));
+            background: linear-gradient(to right, var(--color-claro), var(--color-acento), var(--color-titulo));
             transition: width 0.5s ease-in-out;
             display: flex;
             align-items: center;
@@ -160,43 +178,49 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            border-left: 5px solid var(--color-azul-cobalto);
+            border-left: 5px solid var(--color-texto);
             transition: opacity 0.5s, transform 0.5s;
         }
 
         .pregunta-card h3 {
-            color: var(--color-azul-cobalto);
+            color: var(--color-texto);
             margin-top: 0;
             font-size: 1.4em;
             margin-bottom: 15px;
         }
 
+        /* Restauración de la apariencia de las opciones de respuesta */
         .opcion-respuesta {
             display: block;
+            width: 100%; /* Ocupa todo el ancho */
             margin: 10px 0;
             padding: 12px;
             background-color: var(--color-fondo-claro);
-            border: 1px solid #ddd;
+            border: 1px solid var(--color-texto);
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s;
+            transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
             font-size: 1.05em;
+            text-align: left; /* Alineación del texto a la izquierda */
+            box-shadow: var(--sombra-opcion);
+            font-family: 'Quicksand', sans-serif; 
         }
 
         .opcion-respuesta:hover:not(.disabled) {
-            background-color: #E6E6FA;
-            border-color: var(--color-rosa-fuerte);
+            background-color: #E6F0F0;
+            border-color: var(--color-acento);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .opcion-respuesta.correcta {
-            background-color: #D4EDDA;
-            border-color: var(--color-verde-cactus);
+            background-color: #D3F3E3; 
+            border-color: var(--color-texto);
             font-weight: bold;
         }
 
         .opcion-respuesta.incorrecta {
-            background-color: #F8D7DA;
-            border-color: var(--color-rojo-mexico);
+            background-color: #FEE7F2; 
+            border-color: var(--color-titulo);
         }
 
         .opcion-respuesta.disabled {
@@ -212,47 +236,61 @@
         }
 
         .feedback.correcto {
-            background-color: var(--color-verde-cactus);
+            background-color: var(--color-texto);
             color: white;
         }
 
         .feedback.incorrecto {
-            background-color: var(--color-rojo-mexico);
+            background-color: var(--color-titulo);
             color: white;
         }
 
         .boton-siguiente-nivel {
-            display: none;
+            display: none; /* De vuelta al comportamiento original */
             width: 100%;
             padding: 12px;
             margin-top: 20px;
             font-size: 1.1em;
             font-weight: bold;
             color: white;
-            background-color: var(--color-verde-cactus);
+            background-color: var(--color-texto);
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s;
+            font-family: 'Quicksand', sans-serif;
         }
         
         /* Pantalla Final del Juego de Comprensión */
         #pantalla-final-juego {
             text-align: center;
             padding: 50px 20px;
-            background-color: var(--color-azul-cobalto);
-            color: white;
+            background-color: var(--color-texto);
+            color: white; /* Color del texto general de la pantalla final */
             border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             display: none;
         }
 
         #pantalla-final-juego h2 {
-            color: var(--color-amarillo-sol);
+            color: var(--color-claro);
             font-size: 3em;
             margin-bottom: 20px;
             border: none;
         }
+        
+        /* Estilo para centrar los mensajes de felicitación */
+        .mensaje-centrado {
+            text-align: center;
+        }
+        /* CAMBIO SOLICITADO: Color blanco para "¡Felicidades! Has completado el" */
+        #pantalla-final-juego .mensaje-centrado {
+             color: white; 
+        }
+        #pantalla-final-juego .mensaje-centrado strong {
+             color: var(--color-acento); 
+        }
+
 
         /*
         ========================================
@@ -266,22 +304,14 @@
             margin-top: 20px;
         }
 
-        .columna-palabras, .columna-definiciones {
-            flex: 1;
-            min-height: 400px;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
         .columna-palabras {
-            background-color: #EBF5FB;
-            border: 2px solid var(--color-azul-cobalto);
+            background-color: #E6F0F0;
+            border: 2px solid var(--color-texto);
         }
 
         .columna-definiciones {
-            background-color: #FCF3CF;
-            border: 2px solid var(--color-amarillo-sol);
+            background-color: #FFF8E6;
+            border: 2px solid var(--color-acento);
         }
 
         .item-vocabulario {
@@ -295,23 +325,23 @@
         }
 
         .palabra {
-            background-color: var(--color-azul-cobalto);
+            background-color: var(--color-texto);
             color: white;
         }
 
         .definicion {
-            background-color: var(--color-amarillo-sol);
+            background-color: var(--color-acento);
             color: var(--color-texto-oscuro);
             font-weight: normal;
         }
 
         .seleccionado {
             transform: scale(1.05);
-            box-shadow: 0 0 0 3px var(--color-rojo-mexico);
+            box-shadow: 0 0 0 3px var(--color-titulo);
         }
 
         .match-correcto {
-            background-color: var(--color-verde-cactus) !important;
+            background-color: #31a4ac !important;
             color: white !important;
             cursor: default;
         }
@@ -320,18 +350,25 @@
         #pantalla-final-vocabulario {
             text-align: center;
             padding: 50px 20px;
-            background-color: var(--color-rojo-mexico);
-            color: white;
+            background-color: var(--color-titulo);
+            color: white; 
             border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             display: none;
         }
 
         #pantalla-final-vocabulario h2 {
-            color: var(--color-amarillo-sol);
+            color: var(--color-claro);
             font-size: 3em;
             margin-bottom: 20px;
             border: none;
+        }
+        /* CAMBIO SOLICITADO: Color blanco para "Has completado la actividad de vocabulario sobre Celia Cruz." */
+        #pantalla-final-vocabulario p {
+            color: white; 
+        }
+        #pantalla-final-vocabulario strong {
+            color: var(--color-claro); 
         }
 
         /*
@@ -349,8 +386,8 @@
             position: relative;
             height: 500px;
             width: 100%;
-            background: linear-gradient(to top, #e0f7fa 0%, #b3e5fc 100%);
-            border: 3px solid var(--color-azul-cobalto);
+            background: linear-gradient(to top, #e0f7fa 0%, var(--color-texto) 10%); 
+            border: 3px solid var(--color-texto);
             border-radius: 10px;
             overflow: hidden;
         }
@@ -362,7 +399,7 @@
             padding: 10px 0;
             font-size: 1.2em;
             font-weight: bold;
-            color: var(--color-azul-cobalto);
+            color: var(--color-titulo);
         }
 
         .medidor {
@@ -394,11 +431,11 @@
             padding: 15px 25px;
             border-radius: 50px;
             background-color: rgba(255, 255, 255, 0.85);
-            border: 3px solid var(--color-rosa-fuerte);
+            border: 3px solid var(--color-titulo);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
             font-weight: bold;
-            color: var(--color-azul-cobalto);
+            color: var(--color-texto);
             font-size: 1.1em;
             transition: opacity 0.3s, transform 0.3s;
             z-index: 5;
@@ -438,6 +475,7 @@
             cursor: pointer;
             box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
             transition: transform 0.1s, background-color 0.2s;
+            font-family: 'Quicksand', sans-serif;
         }
         
         .boton-vf:active {
@@ -445,12 +483,18 @@
             box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
         }
 
+        /* CAMBIO SOLICITADO: Color verde (#00ff00) para el botón VERDADERO */
         #btn-verdadero {
-            background-color: var(--color-verde-cactus);
+            background-color: #00ff00; /* Verde brillante */
+        }
+        /* Ajustar hover para el nuevo color */
+        #btn-verdadero:hover {
+            background-color: #00cc00; /* Un verde un poco más oscuro al pasar el ratón */
         }
 
+
         #btn-falso {
-            background-color: var(--color-rojo-mexico);
+            background-color: var(--color-titulo);
         }
 
         #retroalimentacion-vf {
@@ -459,7 +503,7 @@
             left: 50%;
             transform: translateX(-50%);
             padding: 10px 20px;
-            background-color: rgba(52, 73, 94, 0.9);
+            background-color: rgba(49, 164, 172, 0.9);
             color: white;
             border-radius: 8px;
             font-weight: bold;
@@ -477,8 +521,8 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 4em;
-            color: var(--color-amarillo-sol);
-            text-shadow: 2px 2px 5px var(--color-rojo-mexico);
+            color: var(--color-claro);
+            text-shadow: 2px 2px 5px var(--color-titulo);
             font-weight: 900;
             opacity: 0;
             display: none;
@@ -497,7 +541,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(226, 67, 57, 0.95);
+            background-color: rgba(247, 25, 174, 0.95);
             color: white;
             display: flex;
             flex-direction: column;
@@ -510,15 +554,23 @@
         }
         
         #pantalla-final-burbujas h2 {
-            color: var(--color-amarillo-sol);
+            color: var(--color-claro);
             font-size: 3.5em;
             margin-bottom: 20px;
             border: none;
         }
         
+        /* CAMBIO SOLICITADO: Texto de la pantalla final en blanco */
+        #pantalla-final-burbujas p {
+            color: white;
+            font-size: 1.1em;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        
         .puntuacion-final {
             font-size: 3em;
-            color: var(--color-verde-cactus);
+            color: var(--color-texto);
             margin-top: 15px;
             padding: 10px;
             background-color: white;
@@ -534,24 +586,21 @@
 
         <div id="lectura-seccion">
             <h2>Una artista única</h2>
-            <audio controls src="https://pasitoapasito-ed.github.io/Biografia-Frida-Kahlo/frida.mp3"></audio>
-            <img src="https://github.com/pasitoapasito-ed/Biografia-Frida-Kahlo/blob/main/frida-img.png?raw=true" alt="Imagen de Selena Quintanilla" class="imagen-biografia">
+	     <audio controls src="https://pasitoapasito-ed.github.io/Biografia-Frida-Kahlo/frida.mp3"></audio>
+            <img src="https://github.com/pasitoapasito-ed/Biografia-Frida-Kahlo/blob/main/frida-img.png?raw=true" alt="Imagen de Frida Kahlo" class="imagen-biografia">
             
             <p><strong>¿Quién fue Frida Kahlo?</strong></p>
-            <p>Frida Kahlo fue una artista mexicana muy famosa. Nació el 6 de julio de 1907 en Coyoacán, un lugar cerca de la Ciudad de México. Es conocida por sus pinturas, especialmente sus <strong>autorretratos</strong>.</p>
+            <p>Frida Kahlo fue una <strong>artista</strong> mexicana muy famosa. Nació el 6 de julio de 1907 en Coyoacán, un lugar cerca de la Ciudad de México. Es conocida por sus pinturas, especialmente sus <strong>autorretratos</strong>.</p>
 
             <h2>Eventos importantes de su vida</h2>
-            <p>Cuando Frida era niña, tuvo una enfermedad llamada <strong>polio</strong>, que afectó una de sus piernas. A los 18 años, tuvo un <strong>accidente de autobús</strong> muy grave. Estuvo mucho tiempo en cama y comenzó a pintar para pasar el tiempo. Ese accidente cambió su vida para siempre.</p>
-            <p>Frida se casó con el famoso artista <strong>Diego Rivera</strong> y viajó a lugares como Nueva York y París, donde mostró su arte.</p>
-
+            <p>Cuando Frida era niña, tuvo una enfermedad llamada polio, que afectó una de sus piernas. A los 18 años, tuvo un <strong>accidente</strong> de autobús muy grave. Estuvo mucho tiempo en cama y comenzó a pintar para pasar el tiempo. Ese accidente cambió su vida para siempre. </p>
+            <p>Frida se casó con el famoso artista Diego Rivera y viajó a lugares como Nueva York y París, donde mostró su arte.</p>
+            
             <h2>¿Por qué es famosa?</h2>
-            <p>Frida es famosa porque pintaba de una forma muy <strong>original</strong>. Mostraba sus <strong>emociones</strong>, su dolor y su vida en sus cuadros. Usaba colores brillantes, <strong>símbolos</strong> de México y muchas flores y animales. Sus obras son muy poderosas y personales.</p>
+            <p>Frida es famosa porque pintaba de una forma muy original. Mostraba sus <strong>emociones</strong>, su dolor y su vida en sus cuadros. Usaba colores brillantes, símbolos de México y muchas flores y animales. Sus obras son muy poderosas y personales.</p>
 
             <h2>¿Por qué es importante para la cultura hispana?</h2>
-            <p>Frida Kahlo es un símbolo de <strong>fuerza</strong> y de <strong>orgullo</strong> para muchas personas. Representa el valor de ser uno mismo y de luchar en los momentos difíciles.</p>
-            <p>También mostró al mundo la <strong>cultura</strong> mexicana, con su ropa, sus tradiciones y su arte.</p>
-
-            <p>Hoy en día, muchas personas admiran a Frida por su arte y por su historia. <strong>¡Es una inspiración para todos!</strong></p>
+            <p>Frida Kahlo es un <strong>símbolo</strong> de fuerza y de orgullo para muchas personas. Representa el valor de ser uno mismo y de luchar en los momentos difíciles. También mostró al mundo la <strong>cultura</strong> mexicana, con su ropa, sus tradiciones y su arte. Hoy en día, muchas personas admiran a Frida por su arte y por su historia. ¡Es una <strong>inspiración</strong> para todos!</p>
 
             <button class="boton" onclick="iniciarJuego()">Poner a prueba mi comprensión</button>
         </div>
@@ -568,7 +617,7 @@
 
             <div id="pantalla-final-juego">
                 <h2>¡Misión Cumplida! 🎉</h2>
-                <p>¡Felicidades! Has completado el **Camino a la Fama de Frida Kahlo**.</p>
+                <p class="mensaje-centrado">¡Felicidades! Has completado el <strong>Camino a la Fama de Frida Kahlo</strong>.</p>
                 <button class="boton" id="boton-vocabulario" onclick="iniciarVocabulario()">Actividad de vocabulario</button>
             </div>
         </div>
@@ -588,8 +637,8 @@
             
             <div id="pantalla-final-vocabulario">
                 <h2>🌟 ¡Excelente trabajo!</h2>
-                <p>Has completado toda la actividad sobre Frida Kahlo.</p>
-                <button class="boton" id="iniciar-burbujas-btn" onclick="iniciarJuegoBurbujas()">Juego Extra: Explotando Burbujas</button>
+                <p class="mensaje-centrado">Has completado la actividad de vocabulario sobre Frida Kahlo.</p>
+                <button class="boton" id="iniciar-burbujas-btn" onclick="iniciarJuegoBurbujas()">¡A jugar! Explotando burbujas</button>
             </div>
         </div>
         
@@ -617,11 +666,11 @@
                 </div>
 
                 <div id="pantalla-final-burbujas">
-                    <h2>¡Fin del Juego! 🏆</h2>
+                    <h2 id="titulo-final-burbujas">¡Fin del Juego! 🏆</h2>
                     <p>Has completado el juego de Verdadero/Falso sobre Frida Kahlo.</p>
                     <p>Tu puntuación final es:</p>
                     <div class="puntuacion-final" id="puntuacion-final-burbujas">0</div>
-                    <button class="boton" onclick="window.location.reload()">Volver a empezar</button>
+                    <button class="boton" onclick="iniciarJuegoBurbujas()">Volver a empezar</button>
                 </div>
 
             </div>
@@ -636,65 +685,64 @@
         ========================================
         */
 
-        // 1. ESTRUCTURA DE DATOS: PREGUNTAS DEL JUEGO (Pregunta Nivel 3 Modificada)
+        // 1. ESTRUCTURA DE DATOS: PREGUNTAS DEL JUEGO (Adaptadas a Frida Kahlo)
         const niveles = [
             {
-                nombre: "Infancia y Juventud",
+                nombre: "Orígenes y Comienzos",
                 preguntas: [
                     {
                         pregunta: "¿Dónde nació Frida Kahlo?",
-                        opciones: ["París, Francia", "Coyoacán, cerca de la Ciudad de México", "Nueva York, Estados Unidos", "Madrid, España"],
+                        opciones: ["París, Francia", "Coyoacán, cerca de la Ciudad de México", "Nueva York, Estados Unidos", "La Habana, Cuba"],
                         respuestaCorrecta: 1
                     },
                     {
-                        pregunta: "¿Qué enfermedad tuvo Frida cuando era niña que afectó una de sus piernas?",
-                        opciones: ["Sarampión", "Polio", "Gripe", "Cáncer"],
+                        pregunta: "¿Cuál era el tipo de arte más conocido de Frida Kahlo?",
+                        opciones: ["Esculturas de bronce", "Autorretratos", "Murales de paisajes", "Fotografía en blanco y negro"],
+                        respuestaCorrecta: 1 
+                    }
+                ]
+            },
+            {
+                nombre: "Eventos Clave y Dolor",
+                preguntas: [
+                    {
+                        pregunta: "¿Qué enfermedad tuvo Frida cuando era niña?",
+                        opciones: ["Gripe española", "Sarampión", "Polio", "Tuberculosis"],
+                        respuestaCorrecta: 2
+                    },
+                    {
+                        pregunta: "¿Qué evento grave le pasó a Frida a los 18 años?",
+                        opciones: ["Se casó con Diego Rivera", "Tuvo un accidente de autobús", "Se graduó de la universidad", "Viajó a Europa por primera vez"],
                         respuestaCorrecta: 1
                     }
                 ]
             },
             {
-                nombre: "Accidentes y Comienzos Artísticos",
+                nombre: "Fama y Arte",
                 preguntas: [
                     {
-                        pregunta: "¿A qué edad tuvo Frida el accidente de autobús que cambió su vida?",
-                        opciones: ["A los 10 años", "A los 18 años", "A los 30 años", "A los 5 años"],
-                        respuestaCorrecta: 1
+                        pregunta: "¿Con qué famoso artista se casó Frida Kahlo?",
+                        opciones: ["Pablo Picasso", "Vincent van Gogh", "Diego Rivera", "Salvador Dalí"],
+                        respuestaCorrecta: 2
                     },
                     {
-                        pregunta: "¿Por qué razón empezó a pintar Frida después del accidente?",
-                        opciones: ["Para ganar dinero rápidamente", "Para decorar su casa", "Para pasar el tiempo mientras estaba en cama", "Porque se lo pidió Diego Rivera"],
+                        pregunta: "¿Qué mostraba Frida Kahlo en sus cuadros de forma muy personal?",
+                        opciones: ["Cálculos matemáticos complejos", "Recetas de cocina tradicional", "Sus emociones, su dolor y su vida", "Diseños de moda"],
                         respuestaCorrecta: 2
                     }
                 ]
             },
             {
-                nombre: "Vida con Diego Rivera y Fama Internacional",
+                nombre: "Legado e Influencia",
                 preguntas: [
                     {
-                        // PREGUNTA MODIFICADA: Ahora es "¿Con qué artista famoso se casó Frida Kahlo?"
-                        pregunta: "¿Con qué artista famoso se casó Frida Kahlo?",
-                        opciones: ["Pablo Picasso", "Salvador Dalí", "Diego Rivera", "David Siqueiros"],
-                        respuestaCorrecta: 2
-                    },
-                    {
-                        pregunta: "¿Qué tipo de pintura es el más conocido en la obra de Frida Kahlo?",
-                        opciones: ["Paisajes (landscapes)", "Naturalezas muertas (still life)", "Autorretratos (self-portraits)", "Esculturas"],
-                        respuestaCorrecta: 2
-                    }
-                ]
-            },
-            {
-                nombre: "Legado y Últimos Años",
-                preguntas: [
-                    {
-                        pregunta: "¿Qué usaba Frida en sus cuadros para mostrar sus emociones y su vida?",
-                        opciones: ["Fórmulas matemáticas y números", "Colores brillantes, símbolos de México, flores y animales", "Fotos en blanco y negro", "Mucha pintura negra"],
+                        pregunta: "¿Qué símbolos de la cultura mexicana usaba en su arte?",
+                        opciones: ["Solo edificios modernos", "Flores, animales y ropa tradicional", "Comida rápida estadounidense", "Símbolos asiáticos"],
                         respuestaCorrecta: 1
                     },
                     {
-                        pregunta: "¿Qué simboliza Frida Kahlo para muchas personas en la cultura hispana?",
-                        opciones: ["Timidez y soledad", "Riqueza material", "Fuerza, orgullo y el valor de ser uno mismo", "Mala suerte"],
+                        pregunta: "¿Qué representa Frida Kahlo para la cultura hispana, según el texto?",
+                        opciones: ["Un ícono de la tristeza", "Una diseñadora de edificios", "Un símbolo de fuerza, orgullo y la cultura mexicana", "Una famosa actriz de cine"],
                         respuestaCorrecta: 2
                     }
                 ]
@@ -741,6 +789,7 @@
                 let nivelHTML = `<h2>Nivel ${nivelActual + 1}: ${nivel.nombre}</h2>`;
 
                 nivel.preguntas.forEach((preguntaData, indexPregunta) => {
+                    // La tarjeta de pregunta NO debe tener la clase 'respondida-correctamente' al cargar
                     nivelHTML += `
                         <div class="pregunta-card" data-pregunta-index="${indexPregunta}">
                             <h3>Pregunta ${indexPregunta + 1}: ${preguntaData.pregunta}</h3>
@@ -777,6 +826,7 @@
 
         /**
          * Verifica si la opción seleccionada es correcta.
+         * LÓGICA CLAVE: Solo permite avanzar si TODAS las preguntas del nivel han sido respondidas correctamente.
          */
         function verificarRespuesta(indexPregunta, indexOpcion, boton) {
             const pregunta = niveles[nivelActual].preguntas[indexPregunta];
@@ -784,8 +834,10 @@
             const feedbackElement = document.getElementById(`feedback-${indexPregunta}`);
             const preguntaCard = boton.closest('.pregunta-card');
             
-            if (preguntaCard.classList.contains('respondida-correctamente')) return;
+            // Si ya se respondió correctamente, no hacer nada (estado restaurado)
+            if (preguntaCard.getAttribute('data-respondida') === 'true') return;
 
+            // Deshabilitar todas las opciones al intentar responder
             preguntaCard.querySelectorAll('.opcion-respuesta').forEach(b => b.classList.add('disabled'));
 
             if (esCorrecta) {
@@ -794,27 +846,39 @@
                 feedbackElement.innerHTML = '✅ Correcto. ¡Excelente!';
                 feedbackElement.style.display = 'block';
 
+                // Marcar la tarjeta como respondida correctamente para evitar reintentos en esta pregunta
+                preguntaCard.setAttribute('data-respondida', 'true');
                 preguntasRespondidasCorrectamenteEnNivel++;
-                preguntaCard.classList.add('respondida-correctamente');
 
+                // Verificar si TODAS las preguntas del nivel han sido respondidas
                 if (preguntasRespondidasCorrectamenteEnNivel === niveles[nivelActual].preguntas.length) {
                     document.getElementById('siguiente-nivel-btn').style.display = 'block';
                     actualizarProgreso();
                 }
 
             } else {
+                // Si es incorrecta
                 boton.classList.add('incorrecta');
                 feedbackElement.className = 'feedback incorrecto';
                 feedbackElement.innerHTML = '❌ Incorrecto. Vuelve a leer el texto y ¡Intenta otra vez!';
                 feedbackElement.style.display = 'block';
                 
+                // Habilitar de nuevo solo las opciones incorrectas y dejar la incorrecta seleccionada visible (comportamiento anterior)
                 preguntaCard.querySelectorAll('.opcion-respuesta').forEach(b => {
                     if (b !== boton) {
                          b.classList.remove('disabled');
                     }
                 });
+                
+                // Remover la clase incorrecta después de un tiempo para permitir reintentar la misma pregunta
+                setTimeout(() => {
+                    boton.classList.remove('incorrecta');
+                    preguntaCard.querySelectorAll('.opcion-respuesta').forEach(b => b.classList.remove('disabled'));
+                    feedbackElement.style.display = 'none';
+                }, 1500);
             }
         }
+
 
         /**
          * Avanza al siguiente nivel del juego.
@@ -849,13 +913,13 @@
         ========================================
         */
         
-        // 4. ESTRUCTURA DE DATOS: VOCABULARIO
+        // 4. ESTRUCTURA DE DATOS: VOCABULARIO (Adaptado a Frida Kahlo)
         const vocabularioData = [
-            { palabra: "Autorretrato", definicion: "Una pintura o dibujo que un artista hace de sí mismo.", id: 0 },
-            { palabra: "Accidente", definicion: "Un evento inesperado que causa daño o problemas.", id: 1 },
-            { palabra: "Polio", definicion: "Una enfermedad que afecta los músculos y puede causar dificultad para caminar.", id: 2 },
-            { palabra: "Símbolo", definicion: "Una imagen o cosa que representa una idea o un sentimiento.", id: 3 },
-            { palabra: "Cultura", definicion: "Las costumbres, tradiciones, arte y forma de vida de un pueblo.", id: 4 }
+            { palabra: "Autorretrato", definicion: "Una pintura que un artista hace de sí mismo.", id: 0 },
+            { palabra: "Accidente", definicion: "Un evento inesperado que causa daño.", id: 1 },
+            { palabra: "Cultura", definicion: "Costumbres, tradiciones y arte de un pueblo.", id: 2 },
+            { palabra: "Emociones", definicion: "Sentimientos como alegría, tristeza o enojo.", id: 3 },
+            { palabra: "Inspiración", definicion: "Algo o alguien que motiva a crear o mejorar.", id: 4 }
         ];
 
         // 5. VARIABLES DE ESTADO DEL VOCABULARIO
@@ -942,7 +1006,7 @@
             if (definicion.classList.contains('match-correcto')) return;
             
             if (!palabraSeleccionada) {
-                mostrarFeedbackVocabulario('Primero selecciona una **palabra** de la columna izquierda.', false);
+                mostrarFeedbackVocabulario('Primero selecciona una <strong>palabra</strong> de la columna izquierda.', false);
                 return;
             }
 
@@ -977,16 +1041,17 @@
          */
         function mostrarFeedbackVocabulario(mensaje, esCorrecto) {
             feedbackVocabulario.style.display = 'block';
+            // Reemplazo de markdown por <strong>
             feedbackVocabulario.innerHTML = mensaje.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             if (esCorrecto) {
-                feedbackVocabulario.style.backgroundColor = '#D4EDDA';
-                feedbackVocabulario.style.color = varColor('--color-verde-cactus');
-                feedbackVocabulario.style.border = `2px solid ${varColor('--color-verde-cactus')}`;
+                feedbackVocabulario.style.backgroundColor = '#D3F3E3'; 
+                feedbackVocabulario.style.color = varColor('--color-texto');
+                feedbackVocabulario.style.border = `2px solid ${varColor('--color-texto')}`;
             } else {
-                feedbackVocabulario.style.backgroundColor = '#F8D7DA';
-                feedbackVocabulario.style.color = varColor('--color-rojo-mexico');
-                feedbackVocabulario.style.border = `2px solid ${varColor('--color-rojo-mexico')}`;
+                feedbackVocabulario.style.backgroundColor = '#FEE7F2';
+                feedbackVocabulario.style.color = varColor('--color-titulo');
+                feedbackVocabulario.style.border = `2px solid ${varColor('--color-titulo')}`;
             }
         }
 
@@ -1006,47 +1071,47 @@
         ========================================
         */
 
-        // 6. ESTRUCTURA DE DATOS: AFIRMACIONES V/F
+        // 6. ESTRUCTURA DE DATOS: AFIRMACIONES V/F (Usando la lista proporcionada)
         const afirmacionesBurbujas = [
             {
                 texto: "Frida Kahlo nació en la Ciudad de México.",
                 respuesta: false,
-                feedback: "Falso. Nació en Coyoacán, un barrio cerca de la Ciudad de México."
+                feedback: "Falso. Nació en **Coyoacán**, un lugar cerca de la Ciudad de México."
             },
             {
                 texto: "Frida tuvo polio cuando era niña.",
                 respuesta: true,
-                feedback: "Verdadero. La polio afectó su pierna y su forma de caminar."
+                feedback: "Verdadero. La polio afectó una de sus piernas."
             },
             {
-                texto: "El accidente de autobús a los 18 años cambió su vida para siempre.",
+                texto: "El accidente de autobús cambió su vida para siempre.",
                 respuesta: true,
-                feedback: "Verdadero. Este accidente la obligó a estar en cama, donde comenzó a pintar."
+                feedback: "Verdadero. Fue un evento muy grave que la hizo empezar a pintar."
             },
             {
                 texto: "Frida comenzó a pintar después de su accidente.",
                 respuesta: true,
-                feedback: "Verdadero. La pintura se convirtió en su forma de expresar el dolor y su mundo interior."
+                feedback: "Verdadero. Pintaba mientras estaba mucho tiempo en cama."
             },
             {
                 texto: "Frida se casó con Diego Rivera, un artista famoso.",
                 respuesta: true,
-                feedback: "Verdadero. Tuvieron una relación intensa y compleja que influyó mucho en su arte."
+                feedback: "Verdadero. Diego Rivera era un artista famoso, conocido por sus murales."
             },
             {
                 texto: "Frida viajó a Nueva York y a París para mostrar su arte.",
                 respuesta: true,
-                feedback: "Verdadero. Su fama se hizo internacional gracias a estas exposiciones."
+                feedback: "Verdadero. Mostró su arte en varios lugares importantes del mundo."
             },
             {
                 texto: "Sus pinturas siempre fueron tristes y con colores opacos.",
                 respuesta: false,
-                feedback: "Falso. Aunque expresan dolor, usaba colores mexicanos muy **brillantes** y vivos, como el amarillo y el rosa fuerte."
+                feedback: "Falso. Sus obras usaban **colores brillantes** y símbolos de México."
             },
             {
-                texto: "Hoy en día, Frida es vista como una inspiración global de fuerza y orgullo.",
+                texto: "Hoy en día, Frida es vista como una inspiración.",
                 respuesta: true,
-                feedback: "Verdadero. Es un ícono cultural y feminista."
+                feedback: "Verdadero. Su historia y arte inspiran a muchas personas."
             }
         ];
 
@@ -1068,6 +1133,7 @@
         const retroalimentacionVF = document.getElementById('retroalimentacion-vf');
         const pantallaFinalBurbujas = document.getElementById('pantalla-final-burbujas');
         const puntuacionFinalBurbujas = document.getElementById('puntuacion-final-burbujas');
+        const tituloFinalBurbujas = document.getElementById('titulo-final-burbujas');
         const areaJuegoBurbujas = document.getElementById('area-juego-burbujas');
 
         /**
@@ -1088,6 +1154,7 @@
             puntuacion = 0;
             vidas = 3;
             combo = 0;
+            // Mezclar para que no salgan en el mismo orden cada vez
             afirmacionesBurbujas.sort(() => Math.random() - 0.5); 
             afirmacionActualIndex = 0;
             actualizarDisplayBurbujas();
@@ -1107,15 +1174,19 @@
          * Muestra la siguiente burbuja.
          */
         function mostrarNuevaBurbuja() {
-            if (!juegoActivo || afirmacionActualIndex >= afirmacionesBurbujas.length) {
-                terminarJuegoBurbujas();
-                return;
+            if (!juegoActivo) return;
+
+            // Reiniciar el índice si se llega al final de las afirmaciones para que sea infinito hasta que se acaben las vidas
+            if (afirmacionActualIndex >= afirmacionesBurbujas.length) {
+                afirmacionesBurbujas.sort(() => Math.random() - 0.5); // Re-mezclar
+                afirmacionActualIndex = 0;
             }
 
             const afirmacion = afirmacionesBurbujas[afirmacionActualIndex];
-            burbujaActiva.textContent = afirmacion.texto;
+            // Reemplazo de markdown por <strong>
+            burbujaActiva.textContent = afirmacion.texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             burbujaActiva.dataset.respuestaCorrecta = afirmacion.respuesta;
-            burbujaActiva.dataset.feedback = afirmacion.feedback;
+            burbujaActiva.dataset.feedback = afirmacion.feedback.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
             // Reiniciar animación y posición
             burbujaActiva.style.animation = 'none';
@@ -1186,7 +1257,8 @@
             vidas--;
             combo = 0;
             
-            mostrarFeedbackVF(`❌ ${mensajeFeedback}`, 3000);
+            // Se usa el mensaje de feedback del dataset, que ya tiene <strong>
+            mostrarFeedbackVF(`❌ ${mensajeFeedback}`, 3000); 
             
             if (vidas <= 0) {
                 juegoActivo = false;
@@ -1231,6 +1303,14 @@
             burbujaActiva.style.display = 'none';
             
             puntuacionFinalBurbujas.textContent = puntuacion;
+            
+            // LÓGICA DE TROFEO SOLICITADA
+            if (puntuacion > 0) {
+                tituloFinalBurbujas.innerHTML = '¡Fin del Juego! 🏆';
+            } else {
+                tituloFinalBurbujas.innerHTML = '¡Fin del Juego!';
+            }
+
             pantallaFinalBurbujas.style.display = 'flex';
         }
 
@@ -1241,8 +1321,3 @@
 </body>
 
 </html>
-
-
-
-
-
